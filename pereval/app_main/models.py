@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+
+class Coordinates(models.Model):
+    latitude = models.FloatField(max_length=254)
+    longitude = models.FloatField(max_length=254)
+    height = models.IntegerField()
