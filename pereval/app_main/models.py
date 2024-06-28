@@ -3,7 +3,7 @@ from django.db import models
 
 class User(models.Model):
     email = models.EmailField(verbose_name='Электронная почта', unique=True)
-    phone = models.CharField(verbose_name='Номер телефона', max_length=11)
+    phone = models.IntegerField(verbose_name='Номер телефона', max_length=11)
     surname = models.CharField(verbose_name='Фамилия', max_length=256)
     name = models.CharField(verbose_name='Имя', max_length=256)
     patronym = models.CharField(verbose_name='Отчество', max_length=256)
@@ -23,7 +23,7 @@ class Pereval(models.Model):
                       (REJECTED, 'rejected')]
     status = models.CharField(verbose_name='Статус', max_length=2, choices=STATUS_CHOICES, default=NEW)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    coords_id = models.OneToOneField(Coords, on_delete=models.CASCADE)
+    coords = models.OneToOneField(Coords, on_delete=models.CASCADE)
     beautyTitle = models.CharField(max_length=256)
     title = models.CharField(max_length=256)
     other_titles = models.CharField(max_length=256)
@@ -36,7 +36,7 @@ class Pereval(models.Model):
 
 
 class Image(models.Model):
-    pereval_id = models.ForeignKey(Pereval, on_delete=models.CASCADE)
+    pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE)
     image = models.BinaryField()
     datetime = models.DateTimeField(auto_now_add=True)
-    title = models.CharField(max_length=256, blank=True)
+    title = models.CharField(verbose_name='Уточнение к фотографии', max_length=256, blank=True)
