@@ -9,7 +9,7 @@ class PerevalSerializer(serializers.ModelSerializer):
         fields = [
             'user',
             'coords',
-            'beautyTitle',
+            'beauty_title',
             'title',
             'other_titles',
             'connect',
