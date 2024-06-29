@@ -24,7 +24,7 @@ class Pereval(models.Model):
     status = models.CharField(verbose_name='Статус', max_length=2, choices=STATUS_CHOICES, default=NEW)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     coords = models.OneToOneField(Coords, on_delete=models.CASCADE)
-    beautyTitle = models.CharField(max_length=256)
+    beauty_title = models.CharField(max_length=256)
     title = models.CharField(max_length=256)
     other_titles = models.CharField(max_length=256)
     connect = models.TextField(blank=True)
