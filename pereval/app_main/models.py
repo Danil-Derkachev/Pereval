@@ -23,10 +23,12 @@ class Coords(models.Model):
 
 class Pereval(models.Model):
     NEW, PENDING, ACCEPTED, REJECTED = 'NE', 'PE', 'AC', 'RE'
-    STATUS_CHOICES = [(NEW, 'new'),
-                      (PENDING, 'pending',),
-                      (ACCEPTED, 'accepted',),
-                      (REJECTED, 'rejected')]
+    STATUS_CHOICES = [
+        (NEW, 'new'),
+        (PENDING, 'pending'),
+        (ACCEPTED, 'accepted'),
+        (REJECTED, 'rejected')
+    ]
     status = models.CharField(verbose_name='Статус', max_length=2, choices=STATUS_CHOICES, default=NEW)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     coords = models.OneToOneField(Coords, on_delete=models.CASCADE)
