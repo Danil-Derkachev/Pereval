@@ -41,7 +41,7 @@ class Pereval(models.Model):
     level_winter = models.CharField(verbose_name='Уровень сложности зимой', max_length=5, blank=True)
 
     def __str__(self):
-        return f'{self.beauty_title}'
+        return f'{self.pk} {self.beauty_title} {self.title}'
 
 
 class Image(models.Model):
