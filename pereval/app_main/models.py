@@ -8,11 +8,17 @@ class User(models.Model):
     name = models.CharField(verbose_name='Имя', max_length=256)
     patronym = models.CharField(verbose_name='Отчество', max_length=256)
 
+    def __str__(self):
+        return f'{self.pk} {self.surname} {self.name} {self.patronym}'
+
 
 class Coords(models.Model):
     latitude = models.FloatField(verbose_name='Широта', max_length=256)
     longitude = models.FloatField(verbose_name='Долгота', max_length=256)
     height = models.IntegerField(verbose_name='Высота над уровнем моря')
+
+    def __str__(self):
+        return f'latitude:{self.latitude} longitude:{self.longitude} height:{self.height}'
 
 
 class Pereval(models.Model):
@@ -33,6 +39,9 @@ class Pereval(models.Model):
     level_summer = models.CharField(verbose_name='Уровень сложности летом', max_length=5, blank=True)
     level_autumn = models.CharField(verbose_name='Уровень сложности осенью', max_length=5, blank=True)
     level_winter = models.CharField(verbose_name='Уровень сложности зимой', max_length=5, blank=True)
+
+    def __str__(self):
+        return f'{self.beauty_title}'
 
 
 class Image(models.Model):
