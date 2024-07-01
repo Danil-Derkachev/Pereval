@@ -1,8 +1,9 @@
 from django.http import JsonResponse
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView, ListAPIView
 
 from .models import Pereval
-from .serializers import PerevalCreateSerializer, PerevalRetrieveSerializer, PerevalRetrieveUpdateSerializer
+from .serializers import PerevalCreateSerializer, PerevalRetrieveSerializer, PerevalRetrieveUpdateSerializer, \
+    PerevalListSerializer
 
 
 class PerevalCreateAPIView(CreateAPIView):
@@ -43,3 +44,18 @@ class PerevalRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             except Exception as exc:
                 data = {"state": 0, "message": f"Bad Request: {exc}"}
                 return JsonResponse(data=data)
+
+
+class PerevalListAPIView(ListAPIView):
+    queryset = Pereval.objects.all()
+    serializer_class = PerevalListSerializer
+
+    def get(self, request, *args, **kwargs):
+        email = kwargs['email']
+        objects = Pereval.objects.filter(user__email=email)
+        if objects:
+            data = PerevalListSerializer(objects, many=True).data
+            return JsonResponse(data=data, safe=False)
+        else:
+            data = {'message': f'Нет записей от email = {email}'}
+            return JsonResponse(data=data)
