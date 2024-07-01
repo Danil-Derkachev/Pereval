@@ -30,3 +30,9 @@ class PerevalRetrieveUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pereval
         exclude = ['user']
+
+
+class PerevalListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pereval
+        fields = '__all__'
