@@ -1,22 +1,61 @@
 from django.http import JsonResponse
-from rest_framework import generics
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveAPIView, ListAPIView
 
 from .models import Pereval
-from .serializers import PerevalSerializer
+from .serializers import PerevalCreateSerializer, PerevalRetrieveSerializer, PerevalRetrieveUpdateSerializer, \
+    PerevalListSerializer
 
 
-class PerevalAPI(generics.CreateAPIView):
-    queryset = Pereval.objects.all()
-    serializer_class = PerevalSerializer
-
-    def post(self, request):
-        pereval = PerevalSerializer(data=request.data)
+class PerevalCreateAPIView(CreateAPIView):
+    def post(self, request, *args, **kwargs):
+        pereval = PerevalCreateSerializer(data=request.data)
         try:
             if pereval.is_valid(raise_exception=True):
                 pereval.save()
                 data = {'status': '200', 'message': 'null', 'id': f'{pereval.instance.id}'}
-                return JsonResponse(data, status=200, safe=False)
+                return JsonResponse(data=data)
 
         except Exception as exc:
-            response_data = {'status': '400', 'message': f'Bad Request: {exc}', 'id': 'null'}
-            return JsonResponse(response_data, status=400, safe=False)
+            data = {'status': '400', 'message': f'Bad Request: {exc}', 'id': 'null'}
+            return JsonResponse(data=data)
+
+
+class PerevalRetrieveAPIView(RetrieveAPIView):
+    queryset = Pereval.objects.all()
+    serializer_class = PerevalRetrieveSerializer
+
+
+class PerevalRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    queryset = Pereval.objects.all()
+    serializer_class = PerevalRetrieveUpdateSerializer
+
+    def patch(self, request, *args, **kwargs):
+        instance = Pereval.objects.get(pk=kwargs['pk'])
+        if instance.status != "NE":
+            data = {"state": 0, "message": "Перевал на модерации, вы не можете его изменить."}
+            return JsonResponse(data=data)
+        else:
+            serializer = PerevalRetrieveUpdateSerializer(data=request.data, instance=instance)
+            try:
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+                    data = {"state": 1, "message": "null"}
+                    return JsonResponse(data=data)
+            except Exception as exc:
+                data = {"state": 0, "message": f"Bad Request: {exc}"}
+                return JsonResponse(data=data)
+
+
+class PerevalListAPIView(ListAPIView):
+    queryset = Pereval.objects.all()
+    serializer_class = PerevalListSerializer
+
+    def get(self, request, *args, **kwargs):
+        email = kwargs['email']
+        objects = Pereval.objects.filter(user__email=email)
+        if objects:
+            data = PerevalListSerializer(objects, many=True).data
+            return JsonResponse(data=data, safe=False)
+        else:
+            data = {'message': f'Нет записей от email = {email}'}
+            return JsonResponse(data=data)
