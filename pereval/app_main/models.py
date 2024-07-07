@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -32,10 +33,10 @@ class Pereval(models.Model):
     status = models.CharField(verbose_name='Статус', max_length=2, choices=STATUS_CHOICES, default=NEW)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     coords = models.OneToOneField(Coords, on_delete=models.CASCADE)
-    beauty_title = models.CharField(max_length=256)
-    title = models.CharField(max_length=256)
-    other_titles = models.CharField(max_length=256)
-    connect = models.TextField(blank=True)
+    beauty_title = models.CharField(verbose_name='Тип местности', max_length=256)
+    title = models.CharField(verbose_name='Название', max_length=256)
+    other_titles = models.CharField(verbose_name='Другие названия', max_length=256)
+    connect = models.TextField(verbose_name='Сопроводительный текст', blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
     level_spring = models.CharField(verbose_name='Уровень сложности весной', max_length=5, blank=True)
     level_summer = models.CharField(verbose_name='Уровень сложности летом', max_length=5, blank=True)
@@ -48,6 +49,10 @@ class Pereval(models.Model):
 
 class Image(models.Model):
     pereval = models.ForeignKey(Pereval, on_delete=models.CASCADE, related_name='images')
-    image = models.BinaryField(blank=True)
+    image = models.ImageField(verbose_name='Изображения', blank=True, upload_to='images/%Y/%m/%d',
+                              validators=[FileExtensionValidator(allowed_extensions=['png', 'jpeg'])])
     datetime = models.DateTimeField(auto_now_add=True)
     title = models.CharField(verbose_name='Уточнение к фотографии', max_length=256, blank=True)
+
+    def __str__(self):
+        return f'{self.pk} {self.title} {self.pereval.primary_key}'
